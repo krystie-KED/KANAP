@@ -122,33 +122,28 @@ const getSelectedObject = async () => {
                         // le local storage contient deja un element
                         if (cartItems != null) {
                             // etape 1 : verifier que l'id et la couleur choisi n'ont pas deja été ajouté
-                            // for(let cartItem of cartItems){                    
-                            //     if(optionProducts._id == cartItem._id && optionProducts.colors == cartItem.colors){
-                            //         console.log('bip bip');
-                            //         cartItems.quantity = cartItem.quantity + optionProducts.quantity;
+                            // si c'est le cas mofifier la quantité
+                            // si il n'existe pas ajouter le nouveau produit
                             const exists = cartItems.find(item => item._id == optionProducts._id && item.colors == optionProducts.colors)
                             if (exists) {
                                 for (let i = 0; i < cartItems.length; i++) {
                                     if (cartItems[i]._id === optionProducts._id && cartItems[i].colors === optionProducts.colors) {
                                         console.log('bip bip');
                                         cartItems[i].quantity = optionProducts.quantity + cartItems[i].quantity;
-                                        // cartItems.quantity = cartItems[i].quantity;
 
                                         localStorage.setItem('product', JSON.stringify(cartItems));
                                         console.log(cartItems);
 
 
                                     }
-                            
-
-
                                 }
                             } else {
                                 cartItems.push(optionProducts);
                                 localStorage.setItem('product', JSON.stringify(cartItems));
                                 console.log(cartItems);
                             }
-                        } else {
+                        } // le local storage est vide 
+                        else {
                             cartItems = [];
                             cartItems.push(optionProducts);
                             localStorage.setItem('product', JSON.stringify(cartItems));
