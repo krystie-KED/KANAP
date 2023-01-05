@@ -75,17 +75,17 @@ const deleteItemFromCart = async (e) => {
   const cartItems = JSON.parse(localStorage.getItem('product'));
   console.log(articleParent.dataset);
 
-  const newCartItems = cartItems.map(item => {
+  cartItems.map(item => {
     if (item._id === articleParent.dataset.id && item.colors === articleParent.dataset.color) {
       console.log(cartItems.indexOf(item));
       cartItems.splice(cartItems.indexOf(item), 1);
+      localStorage.setItem('product', JSON.stringify(cartItems));
       console.log(cartItems);
     }
-
   })
 
-  localStorage.setItem('product', JSON.stringify(newCartItems));
-  console.log(newCartItems);
+  // localStorage.setItem('product', JSON.stringify(newCartItems));
+  // console.log(newCartItems);
 
 }
 Array.from(deleteItem).forEach(item => item.addEventListener('click', deleteItemFromCart));
@@ -112,7 +112,8 @@ let totalPrice = document.getElementById('totalPrice');
 let totalPriceProducts = 0;
 const totalCost = async () => {
   cartItems.forEach(element => {
-    totalPriceProducts = element.quantity * element.price;
+    let quantity 
+    totalPriceProducts = totalPriceProducts + (element.quantity * element.price);
     console.log(totalPriceProducts);
   })
   totalPrice.innerHTML = `${totalPriceProducts}`;
@@ -144,19 +145,24 @@ const disableSubmit = async (disabled) => {
   }
 }
 // 3 - je crée les masques qui vont me permettre de faire mes verifications
-let masque1 = /a-zA-Z/;
-let masque2 = /^[0-9]{3,},a-zA-Z/g;
-let masque3 = /[a-zA-Z@\.]/g;
+// masque verification nom, prenom, ville
+let masque1 = /^[A-Za-z\-]{3,30}$/;
+// masque verification adresse
+let masque2 = /^[0-9]{3,}[,a-zA-Z]/g;
+// masque verification email
+let masque3 = /[A-Za-z0-9](([_\.\-]?[a-zA-Z0-9]+)*)@([A-Za-z0-9]+)(([_\.\-]?[a-zA-Z0-9]+)*)\.([A-Za-z]{2,})/;
 
 
 // 4 - je verifie avec l'evenement onChange si la valeur saisie match avec le libéllé
 firstname.addEventListener('change', function (e) {
   if (masque1.test(e.target.value)) {
-    disableSubmit(false);
+    return disableSubmit(false);
+    console.log(OK);
   } else {
     let errorFirstname = document.querySelector('#firstNameErrorMsg');
     errorFirstname.innerText = "Le prénom ne doit contenir que des lettres";
-    disableSubmit(true);
+    return disableSubmit(true);
+    console.log(KO);
   }
 });
 
@@ -231,12 +237,20 @@ const send = async (e) => {
       }
     })
     .then(function (contact) {
-
+      console.log(contact.orderId);
+      window.location.href = `http://127.0.0.1:5500/front/html/confirmation.html?orderId=${contact.orderId}`;
     })
+   
 }
+
+//Function qui va permettre une fois que le formulaire est envoyé de recupérer orderId
+
+
 let order = document.getElementById('order');
 order.addEventListener('click', function (e) {
   e.preventDefault();
-  send(e);
-
+  send(e); 
 })
+
+
+

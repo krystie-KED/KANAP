@@ -10,7 +10,7 @@ const getUrlParam = async () => {
         // console.log(params);
     }
 }
-getUrlParam();
+getUrlParam(); 
 
 // recupere l'id dans les params 
 const id = urlSearch.get("id");
