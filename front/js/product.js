@@ -1,33 +1,32 @@
 let url = new URL(window.location.href);
 let urlSearch = new URLSearchParams(url.search);
-const urlId = "http://localhost:3000/api/products";
 let array = [];
 
 
-// Function qui recupere les params dans l'url 
+// Fonction qui récupère les params dans l'url 
 const getUrlParam = async () => {
     for (const params of urlSearch) {
-        // console.log(params);
+        console.log(params);
     }
 }
-getUrlParam(); 
+getUrlParam();
 
 // recupere l'id dans les params 
 const id = urlSearch.get("id");
 console.log(id);
 
+const urlId = `http://localhost:3000/api/products/${id}`;
 
-// Recuperer l'objet qui a le même id que celui du params§
-// afficher le retour de l'API dans le DOM
+// Récupère l'objet qui a le même id que celui du params
+// affiche le retour de l'API dans le DOM
 const getSelectedObject = async () => {
     await fetch(urlId)
         .then(res => res.json())
         .then(data => {
-            array = data;
-            // console.log(data);
+            console.log(data);
 
             // recherche entre id element cliqué et id params
-            const idSelectedProduct = data.find((element) => element._id === id);
+            // const idSelectedProduct = data;
             //console.log(idSelectedProduct);
 
 
@@ -40,22 +39,22 @@ const getSelectedObject = async () => {
                 const descriptionProduct = document.querySelector("#description");
                 const displayColorProduct = document.querySelector("#colors");
 
-                const colorProduct = idSelectedProduct.colors;
+                const colorProduct = data.colors;
                 // console.log(colorProduct);
 
                 let displayColor = [];
 
                 const displayImage = `        
-                <img src="${idSelectedProduct.imageUrl}" alt="${idSelectedProduct.altTxt}">
+                <img src="${data.imageUrl}" alt="${data.altTxt}">
             `;
                 const displayName = `        
-            ${idSelectedProduct.name}
+            ${data.name}
             `;
                 const displayPrice = `        
-                ${idSelectedProduct.price}
+                ${data.price}
             `;
                 const displayDescription = `        
-                ${idSelectedProduct.description}
+                ${data.description}
             `;
 
                 // boucle qui va permettre d'afficher toutes les couleurs disponibles
@@ -77,23 +76,23 @@ const getSelectedObject = async () => {
 
             //.................MISE EN PLACE DU LOCAL STORAGE....................
 
-            // recupere les id des options (qtt + color) selectionées
+            // récupère les id des options (qtt + color) selectionées
             let quantityProduct = document.querySelector('#quantity');
             let colorChoice = document.querySelector('#colors');
             // console.log(quantityProduct);
 
 
 
-            //creation de l'evenement au click
+            //création de l'évènement au clique
             const addToCart = async () => {
                 let btnAddToCart = document.querySelector('#addToCart');
 
-                // ecoute du click et creation de l'event       
+                // écoute du clique et création de l'évènement       
                 btnAddToCart.addEventListener('click', (e) => {
                     // console.log("on est al ");
                     e.preventDefault();
 
-                    //  mettre le choix dans une variable
+                    //  placer le choix dans une variable
                     const choiceProduct = {
                         quantity: Number(quantityProduct.value),
                         color: colorChoice.value
@@ -101,15 +100,15 @@ const getSelectedObject = async () => {
                     // console.log(typeof choiceProduct.quantity);
                     console.log(choiceProduct);
 
-                    // clé valeur des elements compris dans le panier
+                    // clé : valeur,  des éléments compris dans le panier
                     let optionProducts = {
                         colors: colorChoice.value,
-                        _id: idSelectedProduct._id,
-                        name: idSelectedProduct.name,
-                        price: idSelectedProduct.price,
-                        imageUrl: idSelectedProduct.imageUrl,
-                        altTxt: idSelectedProduct.altTxt,
-                        quantity: choiceProduct.quantity
+                        _id: data._id,
+                        name: data.name,
+                        // price: data.price,
+                        imageUrl: data.imageUrl,
+                        altTxt: data.altTxt,
+                        quantity: Number(choiceProduct.quantity)
                     }
                     // console.log(optionProducts);        
 
@@ -119,9 +118,10 @@ const getSelectedObject = async () => {
                         cartItems = JSON.parse(cartItems);
                         console.log(cartItems);
 
-                        // le local storage contient deja un element
+                        // option 1: le localStorage contient deja un element
+                        if(optionProducts.quantity > 0){
                         if (cartItems != null) {
-                            // etape 1 : verifier que l'id et la couleur choisi n'ont pas deja été ajouté
+                            // etape 1 : verifier que l'id et la couleur choisis n'ont pas déjà été ajoutés
                             // si c'est le cas mofifier la quantité
                             // si il n'existe pas ajouter le nouveau produit
                             const exists = cartItems.find(item => item._id == optionProducts._id && item.colors == optionProducts.colors)
@@ -131,6 +131,7 @@ const getSelectedObject = async () => {
                                         console.log('bip bip');
                                         cartItems[i].quantity = optionProducts.quantity + cartItems[i].quantity;
 
+                                        localStorage.removeItem(price, JSON.stringify(cartItems));
                                         localStorage.setItem('product', JSON.stringify(cartItems));
                                         console.log(cartItems);
 
@@ -142,13 +143,17 @@ const getSelectedObject = async () => {
                                 localStorage.setItem('product', JSON.stringify(cartItems));
                                 console.log(cartItems);
                             }
-                        } // le local storage est vide 
+                        } // option 2: le local storage est vide 
                         else {
                             cartItems = [];
                             cartItems.push(optionProducts);
                             localStorage.setItem('product', JSON.stringify(cartItems));
                             console.log(cartItems);
                         }
+                    }else{
+                        alert('ajouter une quantité');s
+                        return false;
+                    }
 
                     }
                     setItems();

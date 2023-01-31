@@ -4,7 +4,7 @@ const urlId = "http://localhost:3000/api/products/order";
 
 
 
-// Function qui recupere les params dans l'url 
+// Fonction qui récupère les params dans l'url 
 const getUrlParam = async () => {
     for (const params of urlSearch) {
         console.log(params);
@@ -12,7 +12,7 @@ const getUrlParam = async () => {
 }
 getUrlParam();
 
-// recupere l'id de la commande dans les params 
+// je récupère l'id de la commande dans les params 
 const orderId = urlSearch.get("orderId");
     console.log(orderId);
 

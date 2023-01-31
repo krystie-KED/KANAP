@@ -16,7 +16,7 @@ const getItems = async() => {
 getItems();
 
 
-// Function qui permet d'afficher le retour de l'API dans le DOM
+// Fonction qui permet d'afficher le retour de l'API dans le DOM
 const displayItems = async () => {
     document.querySelector("#items").innerHTML = array.map((product) => `
             <a href="./product.html?id=${product._id}">
